@@ -14,7 +14,7 @@ namespace api.Data
         {
             base.OnModelCreating(modelBuilder);
             
-            modelBuilder.Entity<Installment>().HasOne(i => i.Transaction).WithMany(t => t.Installments);
+            //modelBuilder.Entity<Installment>().HasOne(i => i.Transaction).WithMany(t => t.Installments);
             InstallmentMap.Map(modelBuilder.Entity<Installment>());
             TransactionMap.Map(modelBuilder.Entity<Transaction>());
 

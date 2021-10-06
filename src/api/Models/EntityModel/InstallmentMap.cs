@@ -9,10 +9,16 @@ namespace api.Models.EntityModel
         {
                 entityBuilder.ToTable("Parcelas");
 
-                entityBuilder.HasKey(x => x.InstallmentId);
+                entityBuilder.HasKey(i => i.Id);
 
-                entityBuilder.Property(x => x.InstallmentId).ValueGeneratedOnAdd();
-                //entityBuilder.HasOne(i => i.Transaction).WithMany(t => t.Installments);
+                entityBuilder.Property(i => i.Id).HasColumnName("IdParcela").ValueGeneratedOnAdd();
+                entityBuilder.Property(i => i.Amount).HasColumnName("ValorBruto").IsRequired().HasColumnType("decimal(8,2)");
+                entityBuilder.Property(i => i.NetAmount).HasColumnName("ValorLiquido").IsRequired().HasColumnType("decimal(8,2)");
+                entityBuilder.Property(i => i.AnticipatedAmount).HasColumnName("ValorAntecipado").HasColumnType("decimal(8,2)");
+                entityBuilder.Property(i => i.InstallmentNumber).HasColumnName("NumeroParcela").IsRequired();
+                entityBuilder.Property(i => i.ForecastPaymentAt).HasColumnName("PrevisaoRecebimentoData").IsRequired();
+                entityBuilder.Property(i => i.PaymentAt).HasColumnName("RepasseData");
+                entityBuilder.Property(i => i.TransactionId).HasColumnName("IdTransacao");
             
         }
     }
