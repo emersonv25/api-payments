@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
@@ -7,20 +7,16 @@ using System.Threading.Tasks;
 
 namespace api.Models.EntityModel
 {
-    public class TransactionMap : DbContext
+    public static class TransactionMap
     {
-        public TransactionMap(EntityTypeBuilder<Transaction> entityBuilder)
+        public static void Map(EntityTypeBuilder<Transaction> entityBuilder)
         {
+            entityBuilder.ToTable("Transações");
+
             entityBuilder.HasKey(x => x.TransactionId);
 
-            entityBuilder.Property(x => x.TransactionId).IsRequired();
+            entityBuilder.Property(x => x.TransactionId).ValueGeneratedOnAdd();
         
-        }
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-            new TransactionMap(modelBuilder.Entity<Transaction>());
-
         }
 
     }
