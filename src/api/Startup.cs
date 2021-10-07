@@ -1,4 +1,5 @@
 using api.Data;
+using api.Models.ServicesModel;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -31,6 +32,8 @@ namespace api
             string msSqlConnection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContextPool<AppDbContext>(options => 
                 options.UseSqlServer (msSqlConnection));
+            
+            services.AddTransient<TransactionProcessing>();
             
             services.AddControllers();
             services.AddSwaggerGen(c =>

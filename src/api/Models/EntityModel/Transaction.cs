@@ -17,7 +17,7 @@ namespace api.Models.EntityModel
         public decimal NetAmount { get; set; }
         public float Fee { get; set; } 
         public int InstallmentsNumber { get; set; }
-        public int LastFourDigitsCard { get; set; }
+        public string LastFourDigitsCard { get; set; }
         public List<Installment> Installments { get; set; }
     }
 }
