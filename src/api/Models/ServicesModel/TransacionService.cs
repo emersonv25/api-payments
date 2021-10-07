@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Models.ServicesModel
 {
-    public class TransactionProcessing
+    public class TransactionService
     {
         private readonly AppDbContext _context;
         
-        public TransactionProcessing(AppDbContext context)
+        public TransactionService(AppDbContext context)
         {
             _context = context;
         }
@@ -56,7 +56,7 @@ namespace api.Models.ServicesModel
             return transaction;
         }
 
-        public async Task<Transaction> FindTransaction(long transactionId)
+        public async Task<Transaction> GetTransaction(long transactionId)
         { 
             Transaction Transaction =  _context.Transactions.Include(i => i.Installments).FirstOrDefault(x => x.Id == transactionId);
             

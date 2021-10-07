@@ -3,10 +3,28 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace api.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class InitialCreated : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Anticipation",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RequestAt = table.Column<DateTime>(type: "datetime", nullable: false),
+                    StartAt = table.Column<DateTime>(type: "datetime", nullable: true),
+                    EndAt = table.Column<DateTime>(type: "datetime", nullable: true),
+                    Result = table.Column<int>(type: "int", nullable: true),
+                    AmountRequest = table.Column<decimal>(type: "decimal(8,2)", nullable: false),
+                    AmountApproved = table.Column<decimal>(type: "decimal(8,2)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Anticipation", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Transactions",
                 columns: table => new
@@ -17,6 +35,7 @@ namespace api.Migrations
                     ApprovedAt = table.Column<DateTime>(type: "datetime", nullable: true),
                     DisapprovedAt = table.Column<DateTime>(type: "datetime", nullable: true),
                     Antecipado = table.Column<bool>(type: "bit", nullable: true),
+                    AnticipationId = table.Column<long>(type: "bigint", nullable: true),
                     Acquirer = table.Column<bool>(type: "bit", nullable: false),
                     Amount = table.Column<decimal>(type: "decimal(8,2)", nullable: false),
                     NetAmount = table.Column<decimal>(type: "decimal(8,2)", nullable: false),
@@ -27,6 +46,12 @@ namespace api.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Transactions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Transactions_Anticipation_AnticipationId",
+                        column: x => x.AnticipationId,
+                        principalTable: "Anticipation",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -58,6 +83,11 @@ namespace api.Migrations
                 name: "IX_Installments_TransactionId",
                 table: "Installments",
                 column: "TransactionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Transactions_AnticipationId",
+                table: "Transactions",
+                column: "AnticipationId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -67,6 +97,9 @@ namespace api.Migrations
 
             migrationBuilder.DropTable(
                 name: "Transactions");
+
+            migrationBuilder.DropTable(
+                name: "Anticipation");
         }
     }
 }

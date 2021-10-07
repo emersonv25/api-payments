@@ -20,19 +20,19 @@ namespace api.Controllers
     public class TransactionController : ControllerBase
     {
         private readonly AppDbContext _context;
-        private readonly TransactionProcessing _transactionProcessing;
+        private readonly TransactionService _transactionService;
 
-        public TransactionController(AppDbContext context, TransactionProcessing transactionProcessing)
+        public TransactionController(AppDbContext context, TransactionService transactionService)
         {
             _context = context;
-            _transactionProcessing = transactionProcessing;
+            _transactionService = transactionService;
         }
 
         // GET: api/v1/transaction/1
         [HttpGet("{transactionId:long}")]
-        public async Task<ActionResult<Transaction>> Find([FromRoute]long transactionId)
+        public async Task<ActionResult<Transaction>> Get([FromRoute]long transactionId)
         {
-            Transaction Transaction = await _transactionProcessing.FindTransaction(transactionId);
+            Transaction Transaction = await _transactionService.GetTransaction(transactionId);
             if (Transaction == null)
             {
                 return NotFound();
@@ -49,7 +49,7 @@ namespace api.Controllers
         {
             var payment = model.Map();
             
-            var transactionProcessing = await _transactionProcessing.Process(payment);
+            var transactionProcessing = await _transactionService.Process(payment);
 
             if(transactionProcessing == null)
             {
@@ -60,7 +60,7 @@ namespace api.Controllers
                 return (new {ErrorMessage = "Transaction disapproved, ID" + transactionProcessing.Id});
             }
 
-            return (new {Message = "Approved transaction, ID:" + transactionProcessing.Id});
+            return (new {Message = "Approved transaction, ID: " + transactionProcessing.Id});
         }
 
     }

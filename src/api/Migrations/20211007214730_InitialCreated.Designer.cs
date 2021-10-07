@@ -10,8 +10,8 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20211007200807_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20211007214730_InitialCreated")]
+    partial class InitialCreated
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,6 +20,36 @@ namespace api.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.10")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("api.Models.EntityModel.Anticipation", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<decimal?>("AmountApproved")
+                        .HasColumnType("decimal(8,2)");
+
+                    b.Property<decimal>("AmountRequest")
+                        .HasColumnType("decimal(8,2)");
+
+                    b.Property<DateTime?>("EndAt")
+                        .HasColumnType("datetime");
+
+                    b.Property<DateTime>("RequestAt")
+                        .HasColumnType("datetime");
+
+                    b.Property<int?>("Result")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("StartAt")
+                        .HasColumnType("datetime");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Anticipation");
+                });
 
             modelBuilder.Entity("api.Models.EntityModel.Installment", b =>
                 {
@@ -73,6 +103,9 @@ namespace api.Migrations
                         .HasColumnType("bit")
                         .HasColumnName("Antecipado");
 
+                    b.Property<long?>("AnticipationId")
+                        .HasColumnType("bigint");
+
                     b.Property<DateTime?>("ApprovedAt")
                         .HasColumnType("datetime");
 
@@ -97,6 +130,8 @@ namespace api.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AnticipationId");
+
                     b.ToTable("Transactions");
                 });
 
@@ -107,6 +142,18 @@ namespace api.Migrations
                         .HasForeignKey("TransactionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("api.Models.EntityModel.Transaction", b =>
+                {
+                    b.HasOne("api.Models.EntityModel.Anticipation", null)
+                        .WithMany("TransactionsList")
+                        .HasForeignKey("AnticipationId");
+                });
+
+            modelBuilder.Entity("api.Models.EntityModel.Anticipation", b =>
+                {
+                    b.Navigation("TransactionsList");
                 });
 
             modelBuilder.Entity("api.Models.EntityModel.Transaction", b =>

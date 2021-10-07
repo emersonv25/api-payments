@@ -7,6 +7,7 @@ namespace api.Data
     {
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<Installment> Installments { get; set; }
+        public DbSet<Anticipation> Anticipations { get; set; }
         public AppDbContext(DbContextOptions<AppDbContext> options): base(options)
         {
         }
@@ -17,6 +18,7 @@ namespace api.Data
             //modelBuilder.Entity<Installment>().HasOne(i => i.Transaction).WithMany(t => t.Installments);
             InstallmentMap.Map(modelBuilder.Entity<Installment>());
             TransactionMap.Map(modelBuilder.Entity<Transaction>());
+            AnticipationMap.Map(modelBuilder.Entity<Anticipation>());
 
         }
 

@@ -33,7 +33,8 @@ namespace api
             services.AddDbContextPool<AppDbContext>(options => 
                 options.UseSqlServer (msSqlConnection));
             
-            services.AddTransient<TransactionProcessing>();
+            services.AddTransient<TransactionService>();
+            services.AddTransient<AnticipationService>();
             
             services.AddControllers();
             services.AddSwaggerGen(c =>

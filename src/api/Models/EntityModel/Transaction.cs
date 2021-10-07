@@ -13,6 +13,7 @@ namespace api.Models.EntityModel
         public DateTime? ApprovedAt { get; set; }
         public DateTime? DisapprovedAt { get; set; }
         public bool? Anticipated { get; set;}
+        public long? AnticipationId { get; set; }
         public bool Acquirer { get; set; }
         public decimal Amount { get; set; }
         public decimal NetAmount { get; set; }
@@ -20,7 +21,7 @@ namespace api.Models.EntityModel
         public int InstallmentsNumber { get; set; }
         public string LastFourDigitsCard { get; set; }
         public List<Installment> Installments { get; set; }
-
+        
         [NotMapped]
         public string CreditCardNumber { get; set; }
 
