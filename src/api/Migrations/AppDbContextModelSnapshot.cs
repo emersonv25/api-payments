@@ -24,42 +24,34 @@ namespace api.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
-                        .HasColumnName("IdParcela")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(8,2)")
-                        .HasColumnName("ValorBruto");
+                        .HasColumnType("decimal(8,2)");
 
                     b.Property<decimal?>("AnticipatedAmount")
-                        .HasColumnType("decimal(8,2)")
-                        .HasColumnName("ValorAntecipado");
+                        .HasColumnType("decimal(8,2)");
+
+                    b.Property<DateTime?>("AnticipatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("ForecastPaymentAt")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("PrevisaoRecebimentoData");
+                        .HasColumnType("datetime");
 
                     b.Property<int>("InstallmentNumber")
-                        .HasColumnType("int")
-                        .HasColumnName("NumeroParcela");
+                        .HasColumnType("int");
 
                     b.Property<decimal>("NetAmount")
-                        .HasColumnType("decimal(8,2)")
-                        .HasColumnName("ValorLiquido");
-
-                    b.Property<DateTime?>("PaymentAt")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("RepasseData");
+                        .HasColumnType("decimal(8,2)");
 
                     b.Property<long>("TransactionId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("IdTransacao");
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
                     b.HasIndex("TransactionId");
 
-                    b.ToTable("Parcelas");
+                    b.ToTable("Installments");
                 });
 
             modelBuilder.Entity("api.Models.EntityModel.Transaction", b =>
@@ -67,64 +59,52 @@ namespace api.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
-                        .HasColumnName("IdTransacao")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<bool>("Acquirer")
-                        .HasColumnType("bit")
-                        .HasColumnName("Adquirente");
+                        .HasColumnType("bit");
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(8,2)")
-                        .HasColumnName("ValorBruto");
+                        .HasColumnType("decimal(8,2)");
 
                     b.Property<bool?>("Anticipated")
                         .HasColumnType("bit")
                         .HasColumnName("Antecipado");
 
                     b.Property<DateTime?>("ApprovedAt")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("DataAprovacao");
+                        .HasColumnType("datetime");
 
                     b.Property<DateTime?>("DisapprovedAt")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("DataReprovacao");
+                        .HasColumnType("datetime");
 
                     b.Property<decimal>("Fee")
-                        .HasColumnType("decimal(8,2)")
-                        .HasColumnName("Taxa");
+                        .HasColumnType("decimal(8,2)");
 
                     b.Property<int>("InstallmentsNumber")
-                        .HasColumnType("int")
-                        .HasColumnName("NumeroParcelas");
+                        .HasColumnType("int");
 
                     b.Property<string>("LastFourDigitsCard")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("UltimosQuatroDigitos");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("NetAmount")
-                        .HasColumnType("decimal(8,2)")
-                        .HasColumnName("ValorLiquido");
+                        .HasColumnType("decimal(8,2)");
 
                     b.Property<DateTime>("TransactionAt")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("DataTransacao");
+                        .HasColumnType("datetime");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Transacoes");
+                    b.ToTable("Transactions");
                 });
 
             modelBuilder.Entity("api.Models.EntityModel.Installment", b =>
                 {
-                    b.HasOne("api.Models.EntityModel.Transaction", "Transaction")
+                    b.HasOne("api.Models.EntityModel.Transaction", null)
                         .WithMany("Installments")
                         .HasForeignKey("TransactionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Transaction");
                 });
 
             modelBuilder.Entity("api.Models.EntityModel.Transaction", b =>

@@ -7,18 +7,16 @@ namespace api.Models.EntityModel
     {
         public static void Map(EntityTypeBuilder<Installment> entityBuilder)
         {
-                entityBuilder.ToTable("Parcelas");
+                entityBuilder.ToTable("Installments");
 
                 entityBuilder.HasKey(i => i.Id);
 
-                entityBuilder.Property(i => i.Id).HasColumnName("IdParcela").ValueGeneratedOnAdd();
-                entityBuilder.Property(i => i.Amount).HasColumnName("ValorBruto").IsRequired().HasColumnType("decimal(8,2)");
-                entityBuilder.Property(i => i.NetAmount).HasColumnName("ValorLiquido").IsRequired().HasColumnType("decimal(8,2)");
-                entityBuilder.Property(i => i.AnticipatedAmount).HasColumnName("ValorAntecipado").HasColumnType("decimal(8,2)");
-                entityBuilder.Property(i => i.InstallmentNumber).HasColumnName("NumeroParcela").IsRequired();
-                entityBuilder.Property(i => i.ForecastPaymentAt).HasColumnName("PrevisaoRecebimentoData").IsRequired();
-                entityBuilder.Property(i => i.PaymentAt).HasColumnName("RepasseData");
-                entityBuilder.Property(i => i.TransactionId).HasColumnName("IdTransacao");
+                entityBuilder.Property(i => i.Id).ValueGeneratedOnAdd();
+                entityBuilder.Property(i => i.Amount).IsRequired().HasColumnType("decimal(8,2)");
+                entityBuilder.Property(i => i.NetAmount).IsRequired().HasColumnType("decimal(8,2)");
+                entityBuilder.Property(i => i.AnticipatedAmount).HasColumnType("decimal(8,2)");
+                entityBuilder.Property(i => i.InstallmentNumber).IsRequired();
+                entityBuilder.Property(i => i.ForecastPaymentAt).IsRequired().HasColumnType("datetime");
             
         }
     }
