@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace api.Models.EntityModel
 {
@@ -19,5 +19,8 @@ namespace api.Models.EntityModel
         public int InstallmentsNumber { get; set; }
         public string LastFourDigitsCard { get; set; }
         public List<Installment> Installments { get; set; }
+
+        [NotMapped]
+        public string CreditCardNumber { get; set; }
     }
 }
