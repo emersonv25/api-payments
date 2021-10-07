@@ -14,9 +14,6 @@ namespace api.Models.EntityModel
         public DateTime ForecastPaymentAt { get; set; }
         public DateTime? PaymentAt { get; set; }
         public long TransactionId { get; set; }
-        public Transaction Transaction { get; set;}
-
-        
 
     }
 }

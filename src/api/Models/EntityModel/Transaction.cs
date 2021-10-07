@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using Newtonsoft.Json;
 
 namespace api.Models.EntityModel
 {
@@ -22,5 +23,6 @@ namespace api.Models.EntityModel
 
         [NotMapped]
         public string CreditCardNumber { get; set; }
+
     }
 }

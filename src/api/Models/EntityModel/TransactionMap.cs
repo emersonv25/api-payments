@@ -23,7 +23,7 @@ namespace api.Models.EntityModel
             entityBuilder.Property(t => t.Acquirer).HasColumnName("Adquirente");
             entityBuilder.Property(t => t.Amount).HasColumnName("ValorBruto").IsRequired().HasColumnType("decimal(8,2)");
             entityBuilder.Property(t => t.NetAmount).HasColumnName("ValorLiquido").IsRequired().HasColumnType("decimal(8,2)");
-            entityBuilder.Property(t => t.Fee).HasColumnName("Taxa").IsRequired();
+            entityBuilder.Property(t => t.Fee).HasColumnName("Taxa").IsRequired().HasColumnType("decimal(8,2)");;
             entityBuilder.Property(t => t.InstallmentsNumber).HasColumnName("NumeroParcelas").IsRequired();
             entityBuilder.Property(t => t.LastFourDigitsCard).HasColumnName("UltimosQuatroDigitos").IsRequired();
         

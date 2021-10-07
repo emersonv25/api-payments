@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using api.Models.Validations;
 using api.Models.ServicesModel;
 using api.Models.ViewModel;
+using Newtonsoft.Json;
 
 namespace api.Controllers
 {
@@ -31,8 +32,7 @@ namespace api.Controllers
         [HttpGet("{transactionId:long}")]
         public async Task<ActionResult<Transaction>> Find([FromRoute]long transactionId)
         {
-            var Transaction = await _transactionProcessing.FindTransaction(transactionId);
-
+            Transaction Transaction = await _transactionProcessing.FindTransaction(transactionId);
             if (Transaction == null)
             {
                 return NotFound();

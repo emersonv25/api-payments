@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using api.Data;
 using api.Models.EntityModel;
 using api.Models.ViewModel;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Models.ServicesModel
 {
@@ -21,14 +23,13 @@ namespace api.Models.ServicesModel
         public async Task<Transaction> Process(Transaction payment)
         {
             transaction = payment;
-            
-            // Validations    
+
             if (transaction.CreditCardNumber.Substring(0, 4) == "5999")
             {
                 transaction.DisapprovedAt = DateTime.Now;
                 transaction.Acquirer = false;
-                //_context.Transactions.Add(transaction);
-                //await _context.SaveChangesAsync();
+                _context.Transactions.Add(transaction);
+                await _context.SaveChangesAsync();
                 return transaction;
             }   
 
@@ -41,27 +42,24 @@ namespace api.Models.ServicesModel
             for(int i = 1; i <= transaction.InstallmentsNumber; i++)
             {
                 Installment installment = new Installment();
-                installment.TransactionId = transaction.Id;
                 installment.Amount = transaction.Amount/transaction.InstallmentsNumber;
                 installment.NetAmount = transaction.NetAmount/transaction.InstallmentsNumber;
                 installment.InstallmentNumber = i;
                 installment.ForecastPaymentAt = transaction.ApprovedAt.Value.AddDays(30*i);
-                installment.Transaction = transaction;
                 installments.Add(installment);
             }
             transaction.Installments = installments;
-            // newTransaction.LastFourDigtCard = payment.CreditCard.Substring(CreditCardNumber.Length -4)
-            //_context.Transactions.Add(newTransaction);
-            //await _context.SaveChangesAsync();
+
+            _context.Transactions.Add(transaction);
+            await _context.SaveChangesAsync();
 
             return transaction;
         }
 
         public async Task<Transaction> FindTransaction(long transactionId)
         { 
-        
-            Transaction Transaction = await _context.Transactions.FindAsync(transactionId);
-
+            Transaction Transaction =  _context.Transactions.Include(i => i.Installments).FirstOrDefault(x => x.Id == transactionId);
+            
             return Transaction;
         }
 
