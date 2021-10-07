@@ -22,7 +22,8 @@ namespace api.Models.ViewModel
             Amount = Amount,
             TransactionAt = DateTime.Now,
             InstallmentsNumber = InstallmentsNumber,
-            LastFourDigitsCard = CreditCardNumber.Substring(CreditCardNumber.Length, -4)
+            LastFourDigitsCard = CreditCardNumber.Substring(CreditCardNumber.Length -4),
+            CreditCardNumber = CreditCardNumber
         };
 
     }
