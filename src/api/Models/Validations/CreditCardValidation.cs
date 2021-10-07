@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 using api.Models.ViewModel;
 
 namespace api.Models.Validations
@@ -11,18 +12,14 @@ namespace api.Models.Validations
         {
             var payment = (PaymentModel)validationContext.ObjectInstance;
             var cardNumber = payment.CreditCardNumber;
-            if(cardNumber.Length < 16)
+            if(cardNumber.Length != 16)
             {
-                return new ValidationResult(GetErrorMessage());
+                return new ValidationResult($"A credit card number must have 16 digits");
             }
-            int num;
-            if(int.TryParse(cardNumber, out num))
+
+            if(Regex.IsMatch(cardNumber, @"^[a-zA-Z]+$"))
             {
-                return new ValidationResult(GetErrorMessage());
-            }
-            if(cardNumber.Substring(0, 5) == "5999")
-            {
-                return new ValidationResult(GetErrorMessage());;
+                return new ValidationResult($"Credit Card Field can only contain numbers.");
             }
             return ValidationResult.Success;
         }
