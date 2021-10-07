@@ -53,10 +53,14 @@ namespace api.Controllers
 
             if(transactionProcessing == null)
             {
-                return (new {ErrorMessage = "Error" });
+                return (new {ErrorMessage = "Failed Transaction" });
+            }
+            if(!transactionProcessing.Acquirer)
+            {
+                return (new {ErrorMessage = "Transaction disapproved, ID" + transactionProcessing.Id});
             }
 
-            return (new {Message = "Pagamento realizado com sucesso, ID da Transação: " + transactionProcessing.Id});
+            return (new {Message = "Approved transaction, ID:" + transactionProcessing.Id});
         }
 
     }
