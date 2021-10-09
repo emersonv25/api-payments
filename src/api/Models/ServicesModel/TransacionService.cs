@@ -4,12 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using api.Data;
 using api.Models.EntityModel;
+using api.Models.ServicesModel.Interfaces;
 using api.Models.ViewModel;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Models.ServicesModel
 {
-    public class TransactionService
+    public class TransactionService : ITransactionService
     {
         private readonly AppDbContext _context;
         

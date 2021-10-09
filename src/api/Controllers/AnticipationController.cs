@@ -13,6 +13,7 @@ using api.Models.ServicesModel;
 using api.Models.ViewModel;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
+using api.Models.ServicesModel.Interfaces;
 
 namespace api.Controllers
 {
@@ -21,9 +22,9 @@ namespace api.Controllers
     public class AnticipationController : ControllerBase
     {
         private readonly AppDbContext _context;
-        private readonly AnticipationService _anticipationService;
+        private readonly IAnticipationService _anticipationService;
 
-        public AnticipationController(AppDbContext context, AnticipationService anticipationService)
+        public AnticipationController(AppDbContext context, IAnticipationService anticipationService)
         {
             _context = context;
             _anticipationService = anticipationService;

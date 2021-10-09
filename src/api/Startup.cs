@@ -1,5 +1,6 @@
 using api.Data;
 using api.Models.ServicesModel;
+using api.Models.ServicesModel.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -35,8 +36,8 @@ namespace api
             services.AddDbContextPool<AppDbContext>(options => 
                 options.UseSqlServer (msSqlConnection));
             
-            services.AddTransient<TransactionService>();
-            services.AddTransient<AnticipationService>();
+            services.AddTransient<ITransactionService, TransactionService>();
+            services.AddTransient<IAnticipationService, AnticipationService>();
             
             services.AddControllers();
             services.AddSwaggerGen(c =>

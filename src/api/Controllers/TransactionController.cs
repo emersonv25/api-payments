@@ -12,6 +12,7 @@ using api.Models.Validations;
 using api.Models.ServicesModel;
 using api.Models.ViewModel;
 using Newtonsoft.Json;
+using api.Models.ServicesModel.Interfaces;
 
 namespace api.Controllers
 {
@@ -20,19 +21,19 @@ namespace api.Controllers
     public class TransactionController : ControllerBase
     {
         private readonly AppDbContext _context;
-        private readonly TransactionService _transactionService;
+        private readonly ITransactionService _transactionService;
 
-        public TransactionController(AppDbContext context, TransactionService transactionService)
+        public TransactionController(AppDbContext context, ITransactionService transactionService)
         {
             _context = context;
             _transactionService = transactionService;
         }
 
-        // GET: api/v1/transaction/1
+        // GET: api/v1/transaction/get/1
         /// <summary>
         ///     Retorna uma transação a partir de sua ID
         /// </summary>
-        [HttpGet("{transactionId:long}")]
+        [HttpGet("get/{transactionId:long}")]
         public async Task<ActionResult<Transaction>> Get([FromRoute]long transactionId)
         {
             Transaction Transaction = await _transactionService.GetTransaction(transactionId);

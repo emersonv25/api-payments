@@ -4,12 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using api.Data;
 using api.Models.EntityModel;
+using api.Models.ServicesModel.Interfaces;
 using api.Models.ViewModel;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Models.ServicesModel
 {
-    public class AnticipationService
+    public class AnticipationService : IAnticipationService
     {
         private readonly AppDbContext _context;
         public decimal amountRequest;
@@ -43,7 +44,7 @@ namespace api.Models.ServicesModel
 
             return Anticipations;
         }
-        public async Task<dynamic> RequestAnticipation(List<long> transactionIds)
+        public async Task<Anticipation> RequestAnticipation(List<long> transactionIds)
         {
             Anticipation anticipation = new Anticipation();
             List <Transaction> transactions = new List<Transaction>();
@@ -76,7 +77,7 @@ namespace api.Models.ServicesModel
             await _context.SaveChangesAsync();
             return anticipation;
         }
-        public async Task<dynamic> StartAnticipation(long anticipationId)
+        public async Task<Anticipation> StartAnticipation(long anticipationId)
         {
             Anticipation anticipation = await _context.Anticipations.FindAsync(anticipationId);
             if(anticipation == null){
@@ -92,7 +93,7 @@ namespace api.Models.ServicesModel
             await _context.SaveChangesAsync();
             return anticipation;
         }
-        public async Task<dynamic> ApproveAnticipation(List<long> transactionIds)
+        public async Task<List<Transaction>> ApproveAnticipation(List<long> transactionIds)
         {
             List<Transaction> transactionsList = new List<Transaction>();
 
@@ -131,7 +132,7 @@ namespace api.Models.ServicesModel
             await _context.SaveChangesAsync();
             return transactionsList;
         }
-        public async Task<dynamic> DisapproveAnticipation(List<long> transactionIds)
+        public async Task<List<Transaction>> DisapproveAnticipation(List<long> transactionIds)
         {
             List<Transaction> transactionsList = new List<Transaction>();
 
