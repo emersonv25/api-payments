@@ -66,14 +66,20 @@ namespace api.Controllers
         [HttpPost("request-anticipation")]
         public async Task<ActionResult> RequestAnticipation(List<long> transactionIds)
         {
-            
-            var anticipationProcessing = await _anticipationService.RequestAnticipation(transactionIds);
-
-            if(anticipationProcessing == null)
+            Anticipation anticipation = new Anticipation();
+            try
             {
-                return NotFound("Request Failed");
+                var anticipationProcessing = await _anticipationService.RequestAnticipation(transactionIds);
+                if(anticipationProcessing == null)
+                {
+                    return NotFound("Request Failed");
+                }
+                return Ok(anticipation);
             }
-            return Ok("Anticipation requested successfully");
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // POST: api/v1/analysis/start/{anticipationId:long}
@@ -83,14 +89,21 @@ namespace api.Controllers
         [HttpPost("analysis/start/{anticipationId:long}")]
         public async Task<ActionResult> StartAnticipation(long anticipationId)
         {
-            
-            var anticipationProcessing = await _anticipationService.StartAnticipation(anticipationId);
-
-            if(anticipationProcessing == null)
+            try
             {
-                return NotFound("Anticipation not found or already started!");
+                var anticipationProcessing = await _anticipationService.StartAnticipation(anticipationId);
+
+                if(anticipationProcessing == null)
+                {
+                    return NotFound();
+                }
+                return Ok("Analysis started successfully");            
             }
-            return Ok("Analysis started successfully");
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
         }
 
         // GET: api/v1/analysis/approve/
@@ -109,14 +122,21 @@ namespace api.Controllers
         [HttpPost("analysis/approve/")]
         public async Task<ActionResult> ApproveAnticipation(List<long> transactionIds)
         {
-            
-            var anticipationProcessing = await _anticipationService.ApproveAnticipation(transactionIds);
-
-            if(anticipationProcessing == null)
+            try
             {
-                return NotFound("Request Failed");
+                var anticipationProcessing = await _anticipationService.ApproveAnticipation(transactionIds);
+
+                if(anticipationProcessing == null)
+                {
+                    return NotFound("Request Failed");
+                }
+                return Ok("Transactions successfully Approved!");
             }
-            return Ok("Transactions successfully Approved!");
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
         }
         // GET: api/v1/analysis/disapprove/
         //FromBody: [{transactionId:long}, {transactionId:long}]
@@ -133,15 +153,21 @@ namespace api.Controllers
         /// </remarks>
         [HttpPost("analysis/disapprove/")]
         public async Task<ActionResult> DisapproveAnticipation(List<long> transactionIds)
-        {
-            
-            var anticipationProcessing = await _anticipationService.DisapproveAnticipation(transactionIds);
-
-            if(anticipationProcessing == null)
+        {          
+            try
             {
-                return NotFound("Request Failed");
+                var anticipationProcessing = await _anticipationService.DisapproveAnticipation(transactionIds);
+
+                if(anticipationProcessing == null)
+                {
+                    return NotFound("Request Failed");
+                }
+                return Ok("Transactions successfully disapproved!");
             }
-            return Ok("Transactions successfully Disapproved!");
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

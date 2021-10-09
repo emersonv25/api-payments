@@ -50,7 +50,7 @@ namespace api.Models.ServicesModel
 
             if(await _context.Anticipations.FirstOrDefaultAsync(a => a.Status != 2) != null)
             {
-                return null;
+                throw new Exception("To carry out a new advance request, it is necessary that the current request has already been completed");
             }
             
             foreach(var id in transactionIds)
@@ -60,7 +60,7 @@ namespace api.Models.ServicesModel
                 {
                     if(transaction.AnticipationId != null)
                     {
-                        return null;
+                        throw new Exception("It is not allowed to include previously requested transactions in a new anticipation request");
                     }
                     amountRequest += transaction.NetAmount;
                     transactions.Add(transaction); 
@@ -80,11 +80,11 @@ namespace api.Models.ServicesModel
         {
             Anticipation anticipation = await _context.Anticipations.FindAsync(anticipationId);
             if(anticipation == null){
-                return null;
+                throw new Exception("Anticipation not found!");
             }   
             if(anticipation.Status != 0)
             {
-                return null;
+                throw new Exception("Anticipation already started!");
             }
             anticipation.StartAt = DateTime.Now;
             anticipation.Status = 1;
@@ -99,24 +99,33 @@ namespace api.Models.ServicesModel
             foreach(var id in transactionIds)
             {
                 Transaction transaction = _context.Transactions.Include(i => i.Installments).FirstOrDefault(x => x.Id == id);
+                if(transaction == null)
+                {
+                    throw new Exception("One or more transactions not found!");
+                }
+                if(transaction.Anticipated != null)
+                {
+                    throw new Exception("A transaction with a pass or fail analysis cannot be modified");
+                }
+                if(transaction.AnticipationId == null)
+                {
+                    throw new Exception("There is no anticipation request for one or more transactions");
+                }
                 Anticipation anticipation =  new Anticipation();
                 anticipation =  _context.Anticipations.Include(i => i.TransactionsList).FirstOrDefault(x => x.Id == transaction.AnticipationId);
-                if(transaction != null)
+                foreach(var installment in transaction.Installments)
                 {
-                    foreach(var installment in transaction.Installments)
-                    {
-                        var fee = (installment.NetAmount * (decimal)0.038);
-                        installment.AnticipatedAt = DateTime.Now;
-                        installment.AnticipatedAmount = installment.NetAmount - (fee);
-                        if(anticipation.AmountApproved == null){anticipation.AmountApproved = installment.AnticipatedAmount; }
-                        else{anticipation.AmountApproved += installment.AnticipatedAmount;}
-                        
-                    }
-                    transaction.Anticipated = true;
-                    transactionsList.Add(transaction); 
-                    anticipation = VerifyResultStatus(anticipation);
+                    var fee = (installment.NetAmount * (decimal)0.038);
+                    installment.AnticipatedAt = DateTime.Now;
+                    installment.AnticipatedAmount = installment.NetAmount - (fee);
+                    if(anticipation.AmountApproved == null){anticipation.AmountApproved = installment.AnticipatedAmount; }
+                    else{anticipation.AmountApproved += installment.AnticipatedAmount;}
+                    
                 }
-
+                transaction.Anticipated = true;
+                transactionsList.Add(transaction); 
+                anticipation = VerifyResultStatus(anticipation);
+                
             }
 
             await _context.SaveChangesAsync();
@@ -129,14 +138,24 @@ namespace api.Models.ServicesModel
             foreach(var id in transactionIds)
             {
                 Transaction transaction = _context.Transactions.Include(i => i.Installments).FirstOrDefault(x => x.Id == id);
+                if(transaction == null)
+                {
+                    throw new Exception("One or more transactions not found!");
+                }
+                if(transaction.Anticipated != null)
+                {
+                    throw new Exception("A transaction with a pass or fail analysis cannot be modified");
+                }
+                if(transaction.AnticipationId == null)
+                {
+                    throw new Exception("There is no anticipation request for one or more transactions");
+                }
                 Anticipation anticipation =  new Anticipation();
                 anticipation =  _context.Anticipations.Include(i => i.TransactionsList).FirstOrDefault(x => x.Id == transaction.AnticipationId);
-                if(transaction != null)
-                {
-                    transaction.Anticipated = false;
-                    transactionsList.Add(transaction); 
-                    anticipation = VerifyResultStatus(anticipation);
-                }
+                transaction.Anticipated = false;
+                transactionsList.Add(transaction); 
+                anticipation = VerifyResultStatus(anticipation);
+
             }
 
             await _context.SaveChangesAsync();
