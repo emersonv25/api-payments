@@ -30,12 +30,19 @@ namespace api.Controllers
         }
 
         // GET: api/v1/anticipation/get-transaction-available
+        /// <summary>
+        ///     Consultar transações disponíveis para solicitar antecipação
+        /// </summary>
         [HttpGet("get-transaction-available")]
         public async Task<ActionResult<dynamic>> GetTransactionAvailable()
         {
             List<Transaction> Transaction = await _anticipationService.GetTransactionAvailable();
             return Transaction;
         }
+
+        /// <summary>
+        ///     Consultar histórico de antecipações com filtro por status (0 = pendente, 1 = em análise, 2 = finalizada).
+        /// </summary>
         // GET: api/v1/get-anticipations/{0 || 1 || 2}
         [HttpGet("get-anticipations/{filter:int}")]
         public async Task<ActionResult<dynamic>> GetAnticipations([Range(0,2, ErrorMessage = "Value for {0} must be between {1} and {2}.")] int filter)
@@ -43,8 +50,19 @@ namespace api.Controllers
             List<Anticipation> Anticipations = await _anticipationService.GetAnticipations(filter); 
             return Anticipations;
         }
-        // post: api/v1/anticipation/request-anticipation/ 
-        //FromBody: [{transactionId:long}, {transactionId:long}]
+
+        // POST: api/v1/anticipation/request-anticipation/ 
+        /// <summary>
+        ///     Solicitar antecipação a partir de uma lista com os Ids das transações;
+        /// </summary>
+        /// <remarks>
+        /// Exemplo:
+        ///
+        ///     POST /api/v1/anticipations/request-anticipation
+        ///     [
+        ///       1,2,3
+        ///     ]
+        /// </remarks>
         [HttpPost("request-anticipation")]
         public async Task<ActionResult> RequestAnticipation(List<long> transactionIds)
         {
@@ -59,6 +77,9 @@ namespace api.Controllers
         }
 
         // POST: api/v1/analysis/start/{anticipationId:long}
+        /// <summary>
+        ///     Iniciar o atendimento da antecipação;
+        /// </summary>
         [HttpPost("analysis/start/{anticipationId:long}")]
         public async Task<ActionResult> StartAnticipation(long anticipationId)
         {
@@ -74,6 +95,17 @@ namespace api.Controllers
 
         // GET: api/v1/analysis/approve/
         //FromBody: [{transactionId:long}, {transactionId:long}]
+        /// <summary>
+        ///     Aprovar uma ou mais transações da antecipação a partir de uma lista com os Ids das transações;
+        /// </summary>
+        /// <remarks>
+        /// Exemplo:
+        ///
+        ///     POST /api/v1/analysis/approve/
+        ///     [
+        ///       1,2,3
+        ///     ]
+        /// </remarks>
         [HttpPost("analysis/approve/")]
         public async Task<ActionResult> ApproveAnticipation(List<long> transactionIds)
         {
@@ -88,6 +120,17 @@ namespace api.Controllers
         }
         // GET: api/v1/analysis/disapprove/
         //FromBody: [{transactionId:long}, {transactionId:long}]
+        /// <summary>
+        ///     Reprovar uma ou mais transações da antecipação a partir de uma lista com os Ids das transações;
+        /// </summary>
+        /// <remarks>
+        /// Exemplo:
+        ///
+        ///     POST /api/v1/analysis/disapprove/
+        ///     [
+        ///       1,2,3
+        ///     ]
+        /// </remarks>
         [HttpPost("analysis/disapprove/")]
         public async Task<ActionResult> DisapproveAnticipation(List<long> transactionIds)
         {

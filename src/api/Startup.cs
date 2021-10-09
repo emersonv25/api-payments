@@ -12,7 +12,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace api
@@ -39,7 +41,17 @@ namespace api
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "api", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Payments API", Version = "v1", 
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Emerson J. Santos",
+                        Email = "emersondejesussantos@hotmail.com",
+                        Url = new Uri("https://github.com/emersonv25")
+                    },
+                });
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
             });
         }
 
@@ -50,7 +62,11 @@ namespace api
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "api v1"));
+                app.UseSwaggerUI(c => 
+                {
+                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "api v1");
+                 c.RoutePrefix = string.Empty;
+                });
             }
 
             app.UseHttpsRedirection();

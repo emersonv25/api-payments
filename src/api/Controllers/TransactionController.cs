@@ -29,6 +29,9 @@ namespace api.Controllers
         }
 
         // GET: api/v1/transaction/1
+        /// <summary>
+        ///     Retorna uma transação a partir de sua ID
+        /// </summary>
         [HttpGet("{transactionId:long}")]
         public async Task<ActionResult<Transaction>> Get([FromRoute]long transactionId)
         {
@@ -38,8 +41,21 @@ namespace api.Controllers
         }
 
 
-        // POST: api/v1/Transaction
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        // POST: api/v1/transaction/pay-with-card
+        /// <summary>
+        ///     Efetua um pagamento com cartão de crédito
+        /// </summary>
+        /// <remarks>
+        /// Exemplo:
+        ///
+        ///     POST /api/v1/transaction/pay-with-card
+        ///     {
+        ///        "amount": 100,
+        ///        "installmentsNumber": 2,
+        ///        "creditCardNumber": "1234567891234567"
+        ///     }
+        ///
+        /// </remarks>
         [HttpPost("pay-with-card")]
         public async Task<ActionResult<dynamic>> PayWithCard(PaymentModel model)
         {
@@ -55,7 +71,7 @@ namespace api.Controllers
             {
                 return Ok("Transaction disapproved, ID" + transactionProcessing.Id);
             }
-            return Ok("Approved transaction, ID: " + transactionProcessing.Id);
+            return Ok(transactionProcessing);
         }
 
     }

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace api.Migrations
 {
-    public partial class InitialCreated : Migration
+    public partial class InitialCreate1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -17,6 +17,7 @@ namespace api.Migrations
                     StartAt = table.Column<DateTime>(type: "datetime", nullable: true),
                     EndAt = table.Column<DateTime>(type: "datetime", nullable: true),
                     Result = table.Column<int>(type: "int", nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
                     AmountRequest = table.Column<decimal>(type: "decimal(8,2)", nullable: false),
                     AmountApproved = table.Column<decimal>(type: "decimal(8,2)", nullable: true)
                 },
