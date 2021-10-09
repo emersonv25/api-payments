@@ -92,5 +92,94 @@ namespace api.Models.ServicesModel
             await _context.SaveChangesAsync();
             return anticipation;
         }
+        public async Task<dynamic> ApproveAnticipation(List<long> transactionIds)
+        {
+            List<Transaction> transactionsList = new List<Transaction>();
+
+            foreach(var id in transactionIds)
+            {
+                Transaction transaction = _context.Transactions.Include(i => i.Installments).FirstOrDefault(x => x.Id == id);
+                Anticipation anticipation =  new Anticipation();
+                anticipation =  _context.Anticipations.Include(i => i.TransactionsList).FirstOrDefault(x => x.Id == transaction.AnticipationId);
+                if(transaction != null)
+                {
+                    foreach(var installment in transaction.Installments)
+                    {
+                        var fee = (installment.NetAmount * (decimal)0.038);
+                        installment.AnticipatedAt = DateTime.Now;
+                        installment.AnticipatedAmount = installment.NetAmount - (fee);
+                        if(anticipation.AmountApproved == null){anticipation.AmountApproved = installment.AnticipatedAmount; }
+                        else{anticipation.AmountApproved += installment.AnticipatedAmount;}
+                        
+                    }
+                    transaction.Anticipated = true;
+                    transactionsList.Add(transaction); 
+                    anticipation = VerifyResultStatus(anticipation);
+                }
+
+            }
+
+            await _context.SaveChangesAsync();
+            return transactionsList;
+        }
+        public async Task<dynamic> DisapproveAnticipation(List<long> transactionIds)
+        {
+            List<Transaction> transactionsList = new List<Transaction>();
+
+            foreach(var id in transactionIds)
+            {
+                Transaction transaction = _context.Transactions.Include(i => i.Installments).FirstOrDefault(x => x.Id == id);
+                Anticipation anticipation =  new Anticipation();
+                anticipation =  _context.Anticipations.Include(i => i.TransactionsList).FirstOrDefault(x => x.Id == transaction.AnticipationId);
+                if(transaction != null)
+                {
+                    transaction.Anticipated = false;
+                    transactionsList.Add(transaction); 
+                    anticipation = VerifyResultStatus(anticipation);
+                }
+            }
+
+            await _context.SaveChangesAsync();
+            return transactionsList;
+        }
+        public static Anticipation VerifyResultStatus(Anticipation anticipation)
+        {
+            var finished = true;
+            var approved = 0;
+            var disapproved = 0;
+            foreach(var t in anticipation.TransactionsList)
+            {
+                if(t.Anticipated == null)
+                {
+                    finished = false;
+                }
+                if(t.Anticipated == true)
+                {
+                    approved += 1;
+                }
+                if(t.Anticipated == false)
+                {
+                    disapproved += 1;
+                }
+            }
+            if(finished)
+            {
+                anticipation.EndAt = DateTime.Now;
+                anticipation.Status = 2;
+                if(approved > 0 && disapproved == 0)
+                {
+                    anticipation.Result = 1;
+                }
+                if(approved > 0 && disapproved > 0)
+                {
+                    anticipation.Result = 2;
+                }
+                if(disapproved > 0  && approved == 0)
+                {
+                    anticipation.Result = 0;
+                }
+            }
+            return anticipation;
+        }
     }
 }

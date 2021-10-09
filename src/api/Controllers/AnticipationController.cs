@@ -43,7 +43,7 @@ namespace api.Controllers
             List<Anticipation> Anticipations = await _anticipationService.GetAnticipations(filter); 
             return Anticipations;
         }
-        // GET: api/v1/request-anticipation/ 
+        // post: api/v1/anticipation/request-anticipation/ 
         //FromBody: [{transactionId:long}, {transactionId:long}]
         [HttpPost("request-anticipation")]
         public async Task<ActionResult> RequestAnticipation(List<long> transactionIds)
@@ -55,11 +55,11 @@ namespace api.Controllers
             {
                 return NotFound("Request Failed");
             }
-            return Ok(StatusCodes.Status201Created);
+            return Ok("Anticipation requested successfully");
         }
 
-        // GET: api/v1/start-anticipation-service/{anticipationId:long}
-        [HttpPost("start-anticipation-service/{anticipationId:long}")]
+        // POST: api/v1/analysis/start/{anticipationId:long}
+        [HttpPost("analysis/start/{anticipationId:long}")]
         public async Task<ActionResult> StartAnticipation(long anticipationId)
         {
             
@@ -69,7 +69,36 @@ namespace api.Controllers
             {
                 return NotFound("Anticipation not found or already started!");
             }
-            return Ok(StatusCodes.Status200OK);
+            return Ok("Analysis started successfully");
+        }
+
+        // GET: api/v1/analysis/approve/
+        //FromBody: [{transactionId:long}, {transactionId:long}]
+        [HttpPost("analysis/approve/")]
+        public async Task<ActionResult> ApproveAnticipation(List<long> transactionIds)
+        {
+            
+            var anticipationProcessing = await _anticipationService.ApproveAnticipation(transactionIds);
+
+            if(anticipationProcessing == null)
+            {
+                return NotFound("Request Failed");
+            }
+            return Ok("Transactions successfully Approved!");
+        }
+        // GET: api/v1/analysis/disapprove/
+        //FromBody: [{transactionId:long}, {transactionId:long}]
+        [HttpPost("analysis/disapprove/")]
+        public async Task<ActionResult> DisapproveAnticipation(List<long> transactionIds)
+        {
+            
+            var anticipationProcessing = await _anticipationService.DisapproveAnticipation(transactionIds);
+
+            if(anticipationProcessing == null)
+            {
+                return NotFound("Request Failed");
+            }
+            return Ok("Transactions successfully Disapproved!");
         }
     }
 }
