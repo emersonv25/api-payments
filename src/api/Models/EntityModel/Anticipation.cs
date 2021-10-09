@@ -13,6 +13,7 @@ namespace api.Models.EntityModel
         public DateTime? StartAt { get; set; }
         public DateTime? EndAt { get; set; }
         public int? Result { get; set; }
+        public int Status { get; set; }
         public decimal AmountRequest { get; set; }
         public decimal? AmountApproved { get; set; }
         public List<Transaction> TransactionsList { get; set; }

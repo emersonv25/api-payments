@@ -16,6 +16,7 @@ namespace api.Models.EntityModel
                 entityBuilder.Property(i => i.EndAt).HasColumnType("datetime");
                 entityBuilder.Property(i => i.AmountRequest).IsRequired().HasColumnType("decimal(8,2)");
                 entityBuilder.Property(i => i.AmountApproved).HasColumnType("decimal(8,2)");
+                entityBuilder.Property(i => i.Status).IsRequired().HasDefaultValue(0);
             
         }
     }

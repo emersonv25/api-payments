@@ -33,10 +33,6 @@ namespace api.Controllers
         public async Task<ActionResult<Transaction>> Get([FromRoute]long transactionId)
         {
             Transaction Transaction = await _transactionService.GetTransaction(transactionId);
-            if (Transaction == null)
-            {
-                return NotFound();
-            }
 
             return Transaction;
         }
@@ -53,14 +49,13 @@ namespace api.Controllers
 
             if(transactionProcessing == null)
             {
-                return (new {ErrorMessage = "Failed Transaction" });
+                return NotFound("Failed Transaction");
             }
             if(!transactionProcessing.Acquirer)
             {
-                return (new {ErrorMessage = "Transaction disapproved, ID" + transactionProcessing.Id});
+                return Ok("Transaction disapproved, ID" + transactionProcessing.Id);
             }
-
-            return (new {Message = "Approved transaction, ID: " + transactionProcessing.Id});
+            return Ok("Approved transaction, ID: " + transactionProcessing.Id);
         }
 
     }

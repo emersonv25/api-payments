@@ -34,37 +34,42 @@ namespace api.Controllers
         public async Task<ActionResult<dynamic>> GetTransactionAvailable()
         {
             List<Transaction> Transaction = await _anticipationService.GetTransactionAvailable();
-            if (Transaction == null)
-            {
-                return NotFound();
-            }
-
             return Transaction;
         }
         // GET: api/v1/get-anticipations/{0 || 1 || 2}
         [HttpGet("get-anticipations/{filter:int}")]
         public async Task<ActionResult<dynamic>> GetAnticipations([Range(0,2, ErrorMessage = "Value for {0} must be between {1} and {2}.")] int filter)
         {
-            List<Anticipation> Anticipations = await _anticipationService.GetAnticipations(filter);
-            if (Anticipations == null)
-            {
-                return NotFound();
-            }
-
+            List<Anticipation> Anticipations = await _anticipationService.GetAnticipations(filter); 
             return Anticipations;
         }
-
+        // GET: api/v1/request-anticipation/ 
+        //FromBody: [{transactionId:long}, {transactionId:long}]
         [HttpPost("request-anticipation")]
-        public async Task<ActionResult<dynamic>> RequestAnticipation(AnticipationModel model)
+        public async Task<ActionResult> RequestAnticipation(List<long> transactionIds)
         {
             
-            var anticipationProcessing = await _anticipationService.RequestAnticipation(model);
+            var anticipationProcessing = await _anticipationService.RequestAnticipation(transactionIds);
 
             if(anticipationProcessing == null)
             {
-                return (new {ErrorMessage = "Request Failed" });
+                return NotFound("Request Failed");
             }
-            return (new {Message = "Request made successfully, ID: " + anticipationProcessing.Id});
+            return Ok(StatusCodes.Status201Created);
+        }
+
+        // GET: api/v1/start-anticipation-service/{anticipationId:long}
+        [HttpPost("start-anticipation-service/{anticipationId:long}")]
+        public async Task<ActionResult> StartAnticipation(long anticipationId)
+        {
+            
+            var anticipationProcessing = await _anticipationService.StartAnticipation(anticipationId);
+
+            if(anticipationProcessing == null)
+            {
+                return NotFound("Anticipation not found or already started!");
+            }
+            return Ok(StatusCodes.Status200OK);
         }
     }
 }

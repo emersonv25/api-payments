@@ -12,7 +12,7 @@ namespace api.Models.ServicesModel
     public class AnticipationService
     {
         private readonly AppDbContext _context;
-        public Anticipation anticipation { get; private set; }
+        public decimal amountRequest;
         public AnticipationService(AppDbContext context)
         {
             _context = context;
@@ -29,25 +29,68 @@ namespace api.Models.ServicesModel
             switch (filter)
             {
                 case 0:
-                    Anticipations = await _context.Anticipations.Where(a => a.StartAt == null && a.EndAt == null).ToListAsync();
+                    Anticipations = await _context.Anticipations.Where(a => a.Status == 0).Include(t => t.TransactionsList).ToListAsync();
                 break;
 
                 case 1:
-                    Anticipations = await _context.Anticipations.Where(a => a.StartAt != null && a.EndAt == null).ToListAsync();
+                    Anticipations = await _context.Anticipations.Where(a => a.Status == 1).Include(t => t.TransactionsList).ToListAsync();
                 break;
 
                 case 2:
-                    Anticipations = await _context.Anticipations.Where(a => a.StartAt != null && a.EndAt != null).ToListAsync();
+                    Anticipations = await _context.Anticipations.Where(a => a.Status == 2).Include(t => t.TransactionsList).ToListAsync();
                 break;
             }
 
             return Anticipations;
         }
-        public async Task<Anticipation> RequestAnticipation(AnticipationModel request)
+        public async Task<dynamic> RequestAnticipation(List<long> transactionIds)
         {
             Anticipation anticipation = new Anticipation();
-            return anticipation;
+            List <Transaction> transactions = new List<Transaction>();
 
+            if(await _context.Anticipations.FirstOrDefaultAsync(a => a.Status != 2) != null)
+            {
+                return null;
+            }
+            
+            foreach(var id in transactionIds)
+            {
+                Transaction transaction = await _context.Transactions.FindAsync(id);
+                if(transaction != null)
+                {
+                    if(transaction.AnticipationId != null)
+                    {
+                        return null;
+                    }
+                    amountRequest += transaction.NetAmount;
+                    transactions.Add(transaction); 
+                }
+            }
+            anticipation.RequestAt = DateTime.Now;
+            anticipation.Status = 0;
+            anticipation.AmountRequest = amountRequest;
+            anticipation.TransactionsList = transactions;
+            
+            _context.Anticipations.Add(anticipation);
+
+            await _context.SaveChangesAsync();
+            return anticipation;
+        }
+        public async Task<dynamic> StartAnticipation(long anticipationId)
+        {
+            Anticipation anticipation = await _context.Anticipations.FindAsync(anticipationId);
+            if(anticipation == null){
+                return null;
+            }   
+            if(anticipation.Status != 0)
+            {
+                return null;
+            }
+            anticipation.StartAt = DateTime.Now;
+            anticipation.Status = 1;
+
+            await _context.SaveChangesAsync();
+            return anticipation;
         }
     }
 }
