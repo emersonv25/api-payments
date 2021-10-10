@@ -33,7 +33,7 @@ namespace api.Controllers
         /// <summary>
         ///     Retorna uma transação a partir de sua ID
         /// </summary>
-        [HttpGet("get/{transactionId:long}")]
+        [HttpGet("{transactionId:long}")]
         public async Task<ActionResult<Transaction>> Get([FromRoute]long transactionId)
         {
             Transaction Transaction = await _transactionService.GetTransaction(transactionId);
@@ -58,7 +58,7 @@ namespace api.Controllers
         ///
         /// </remarks>
         [HttpPost("pay-with-card")]
-        public async Task<ActionResult<dynamic>> PayWithCard(PaymentModel model)
+        public async Task<ActionResult> PayWithCard([FromBody]PaymentModel model)
         {
             var payment = model.Map();
             

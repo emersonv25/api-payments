@@ -34,7 +34,7 @@ namespace api.Controllers
         /// <summary>
         ///     Consultar transações disponíveis para solicitar antecipação
         /// </summary>
-        [HttpGet("get-transaction-available")]
+        [HttpGet("transaction-available")]
         public async Task<ActionResult<dynamic>> GetTransactionAvailable()
         {
             List<Transaction> Transaction = await _anticipationService.GetTransactionAvailable();
@@ -45,7 +45,7 @@ namespace api.Controllers
         ///     Consultar histórico de antecipações com filtro por status (0 = pendente, 1 = em análise, 2 = finalizada).
         /// </summary>
         // GET: api/v1/get-anticipations/{0 || 1 || 2}
-        [HttpGet("get-anticipations/{filter:int}")]
+        [HttpGet("find-anticipations/{filter:int}")]
         public async Task<ActionResult<dynamic>> GetAnticipations([Range(0,2, ErrorMessage = "Value for {0} must be between {1} and {2}.")] int filter)
         {
             List<Anticipation> Anticipations = await _anticipationService.GetAnticipations(filter); 
@@ -87,7 +87,7 @@ namespace api.Controllers
         /// <summary>
         ///     Iniciar o atendimento da antecipação;
         /// </summary>
-        [HttpPost("analysis/start/{anticipationId:long}")]
+        [HttpPut("analysis/start/{anticipationId:long}")]
         public async Task<ActionResult> StartAnticipation(long anticipationId)
         {
             try
@@ -120,7 +120,7 @@ namespace api.Controllers
         ///       1,2,3
         ///     ]
         /// </remarks>
-        [HttpPost("analysis/approve/")]
+        [HttpPut("analysis/approve/")]
         public async Task<ActionResult> ApproveAnticipation(List<long> transactionIds)
         {
             try
@@ -152,7 +152,7 @@ namespace api.Controllers
         ///       1,2,3
         ///     ]
         /// </remarks>
-        [HttpPost("analysis/disapprove/")]
+        [HttpPut("analysis/disapprove/")]
         public async Task<ActionResult> DisapproveAnticipation(List<long> transactionIds)
         {          
             try
