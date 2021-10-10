@@ -36,9 +36,13 @@ namespace api.Controllers
         [HttpGet("{transactionId:long}")]
         public async Task<ActionResult<Transaction>> Get([FromRoute]long transactionId)
         {
-            Transaction Transaction = await _transactionService.GetTransaction(transactionId);
+            Transaction transaction = await _transactionService.GetTransaction(transactionId);
+            if(transaction == null)
+            {
+                return NotFound("Transaction not found!");
+            }
 
-            return Transaction;
+            return transaction;
         }
 
 

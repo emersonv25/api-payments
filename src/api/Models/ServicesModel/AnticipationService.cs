@@ -114,6 +114,10 @@ namespace api.Models.ServicesModel
                 }
                 Anticipation anticipation =  new Anticipation();
                 anticipation =  _context.Anticipations.Include(i => i.TransactionsList).FirstOrDefault(x => x.Id == transaction.AnticipationId);
+                if(anticipation.Status != 1)
+                {
+                    throw new Exception("It is necessary to start the anticipation analysis before approving or disapproving");
+                }
                 foreach(var installment in transaction.Installments)
                 {
                     var fee = (installment.NetAmount * (decimal)0.038);
@@ -153,6 +157,10 @@ namespace api.Models.ServicesModel
                 }
                 Anticipation anticipation =  new Anticipation();
                 anticipation =  _context.Anticipations.Include(i => i.TransactionsList).FirstOrDefault(x => x.Id == transaction.AnticipationId);
+                if(anticipation.Status != 1)
+                {
+                    throw new Exception("It is necessary to start the anticipation analysis before approving or disapproving");
+                }
                 transaction.Anticipated = false;
                 transactionsList.Add(transaction); 
                 anticipation = VerifyResultStatus(anticipation);

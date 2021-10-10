@@ -75,7 +75,7 @@ namespace api.Controllers
                 {
                     return NotFound("Request Failed");
                 }
-                return Ok(anticipation);
+                return Ok(anticipationProcessing);
             }
             catch(Exception ex)
             {
