@@ -40,11 +40,24 @@ namespace api.Controllers
             List<Transaction> Transaction = await _anticipationService.GetTransactionAvailable();
             return Transaction;
         }
-
+        // GET: api/v1/get-anticipations/{0 || 1 || 2}
         /// <summary>
         ///     Consultar histórico de antecipações com filtro por status (0 = pendente, 1 = em análise, 2 = finalizada).
         /// </summary>
-        // GET: api/v1/get-anticipations/{0 || 1 || 2}
+        /// <remarks>
+        /// ENUMS:
+        ///
+        ///     Status:
+        ///             0 = Pendente
+        ///             1 = Em Análise
+        ///             2 = Finalizada
+        ///     Result:
+        ///             0 = Reprovada
+        ///             1 = Aprovada
+        ///             2 = Aprovada Parcialmente
+        ///
+        /// </remarks>
+
         [HttpGet("find-anticipations/{filter:int}")]
         public async Task<ActionResult<dynamic>> GetAnticipations([Range(0,2, ErrorMessage = "Value for {0} must be between {1} and {2}.")] int filter)
         {

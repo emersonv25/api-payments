@@ -74,7 +74,7 @@ namespace api.Controllers
             }
             if(!transactionProcessing.Acquirer)
             {
-                return Ok("Transaction disapproved, ID" + transactionProcessing.Id);
+                return Ok("Transaction disapproved, ID " + transactionProcessing.Id);
             }
             return Ok(transactionProcessing);
         }

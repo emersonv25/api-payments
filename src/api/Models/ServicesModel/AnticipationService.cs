@@ -20,7 +20,7 @@ namespace api.Models.ServicesModel
         }
         public async Task<List<Transaction>> GetTransactionAvailable()
         { 
-            List<Transaction> Transaction = await _context.Transactions.Where(t => t.AnticipationId == null).ToListAsync();
+            List<Transaction> Transaction = await _context.Transactions.Where(t => t.AnticipationId == null && t.Acquirer == true).ToListAsync();
             
             return Transaction;
         }
@@ -59,6 +59,10 @@ namespace api.Models.ServicesModel
                 Transaction transaction = await _context.Transactions.FindAsync(id);
                 if(transaction != null)
                 {
+                    if(transaction.Acquirer == false)
+                    {
+                        throw new Exception("It is not possible to request an anticipation of a disapproved transaction");
+                    }
                     if(transaction.AnticipationId != null)
                     {
                         throw new Exception("It is not allowed to include previously requested transactions in a new anticipation request");
